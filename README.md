@@ -1,5 +1,5 @@
 # gesture-suggesting-AI
-1) Gesture suggesting AI application:
+ Gesture suggesting AI application:
 • Objective: This web app aims to analyze a person’s presentation video and suggest appropriate body
 language gestures for effective communication.this system suggest the user for what sentence what gesture
 can be used , gesture are represented in a animation parallel to the raw video of the user presentation
@@ -10,9 +10,16 @@ high-confidence intents and maps them to predefined body language gestures.The m
 responses, preventing misclassification by enforcing strict output formatting. The system can be
 integrated into real-time communication coaching applications, helping usersimprove presentation skills
 and audience engagement.
-• Tools: Python,flask,JavaScript,React, Tailwind CSS, HTML, LLaMA (3.2),Opencv, Requests library,
-Regex, VS Code
+
+
+https://github.com/user-attachments/assets/77271a0e-ff0c-4bc8-aae2-3149818d57df
+
+
+
+OUTPUT:
 
 ![Screenshot 2025-05-18 094259](https://github.com/user-attachments/assets/2fe8ab98-e1fe-45d6-bf6d-74353d695cbf)
-![Screenshot 2025-05-18 094259](https://github.com/user-attachments/assets/86123197-2ee7-4be1-b39a-111a85210af1)
 
+
+
+![Screenshot 2025-05-18 094825](https://github.com/user-attachments/assets/8d986ae4-c014-4d74-b823-1a99589b058e)
