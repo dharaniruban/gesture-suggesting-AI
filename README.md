@@ -16,6 +16,7 @@ web apllication interface:
 ![Screenshot 2025-05-18 094259](https://github.com/user-attachments/assets/2fe8ab98-e1fe-45d6-bf6d-74353d695cbf)
 
 final result output:
+
 https://github.com/user-attachments/assets/77271a0e-ff0c-4bc8-aae2-3149818d57df
 
 
