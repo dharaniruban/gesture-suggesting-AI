@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moventrix App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hero-section {
+      min-height: calc(100vh - 80px);
+    }
+    .text-glow {
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.4),
+                   0 0 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      color: white;
+    }
+    .text-glow:hover {
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.5),
+                   0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    body {
+      background-image: url('/static/ss.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: inherit;
+      filter: blur(5px);
+      z-index: -1;
+    }
+    .text-readable {
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+      color: white;
+    }
+    #analyzeButton {
+      background-color: transparent;
+      color: #ffffff;
+      padding: 10px 20px;
+      border: 2px solid #ffffff;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 500;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      width: 200px;
+      text-align: center;
+      cursor: pointer;
+    }
+    #analyzeButton:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+    #analyzeButton:disabled {
+      background-color: rgba(255, 255, 255, 0.05);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    #processingAnimation {
+      display: none;
+      width: 200px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    @keyframes spin {
+      0% { 
+        transform: rotate(0deg); 
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      }
+      50% { 
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+      }
+      100% { 
+        transform: rotate(360deg); 
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      }
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <!-- Navigation Bar -->
+  <nav class="bg-transparent p-4 flex items-center justify-between backdrop-blur-sm">
+    <div class="flex items-center space-x-6 -ml-4">
+      <img src="/static/la.png" alt="Moventrix Logo" width="70" height="70" />
+    </div>
+    <div class="flex space-x-12 mr-10">
+      <a href="/" class="text-readable hover:text-glow">Home</a>
+      <a href="#" class="text-readable hover:text-glow">Analyze</a>
+      <a href="/results.html" class="text-readable hover:text-glow">Results</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section flex items-center justify-start py-8 px-4">
+    <div class="flex flex-col md:flex-row max-w-6xl w-full">
+      <!-- Left Side: Text -->
+      <div class="md:w-1/2 px-4 md:px-10 text-left flex flex-col ml-4 md:ml-12 max-w-[640px]">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-12 leading-tight text-readable text-glow whitespace-nowrap">
+          Elevate your presentation 
+        </h1>
+        <p class="text-lg mb-4 text-readable">
+          Strong presentation skills are vital for engaging audiences and conveying ideas with credibility. Purposeful body language, especially hand gestures, enhances clarity and persuasion. The Moventrix App refines your gestures by analyzing presentation videos, aligning movements with speech. This feedback eliminates distractions, boosting confidence and stage presence. Moventrix transforms your delivery into a compelling, impactful performance.
+        </p>
+        <p class="text-md mb-6 text-readable">
+          Powered by advanced AI to analyze your videos seamlessly.
+        </p>
+        <div class="relative">
+          <button id="analyzeButton">Analyze Video</button>
+          <div id="processingAnimation">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <input type="file" id="videoInput" accept="video/*" class="hidden" />
+      </div>
+
+      <!-- Right Side: Image -->
+      <div class="md:w-1/2 p-6 flex items-center justify-center">
+        <img src="/static/ro.jpg" alt="" class="rounded-lg shadow-lg max-w-full h-auto" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Script -->
+  <script>
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = (seconds % 60).toFixed(2).padStart(5, '0');
+      return `${minutes.toString().padStart(2, '0')}:${secs}`;
+    }
+
+    const analyzeButton = document.getElementById('analyzeButton');
+    const videoInput = document.getElementById('videoInput');
+    const processingAnimation = document.getElementById('processingAnimation');
+
+    analyzeButton.addEventListener('click', () => videoInput.click());
+    videoInput.addEventListener('change', () => {
+      if (videoInput.files[0]) {
+        processVideo();
+      }
+    });
+
+    async function processVideo() {
+      const file = videoInput.files[0];
+      if (!file) {
+        alert('Please select a video file.');
+        analyzeButton.textContent = 'Analyze Video';
+        return;
+      }
+
+      // Hide button and show processing animation
+      analyzeButton.classList.add('hidden');
+      processingAnimation.style.display = 'flex';
+      analyzeButton.disabled = true;
+
+      const formData = new FormData();
+      formData.append('video', file);
+
+      try {
+        const response = await fetch('/analyze', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+
+        // Store analysis results and video filename
+        sessionStorage.setItem('analysisResults', JSON.stringify(data));
+        sessionStorage.setItem('videoFilename', data.videoFilename || file.name);
+        window.location.href = '/results.html';
+      } catch (error) {
+        console.error('Error Details:', error.message, error.stack);
+        alert(`An error occurred while processing the video: ${error.message}`);
+        // Show button and hide animation on error
+        analyzeButton.classList.remove('hidden');
+        processingAnimation.style.display = 'none';
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = 'Analyze Video';
+      }
+    }
+  </script>
+</body>
+</html>

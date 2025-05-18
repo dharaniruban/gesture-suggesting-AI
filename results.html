@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moventrix Analysis Results</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .text-glow {
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.4),
+                   0 0 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      color: white;
+    }
+    .text-glow:hover {
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.5),
+                   0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    body {
+      background-image: url('/static/ss.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: inherit;
+      filter: blur(5px);
+      z-index: -1;
+    }
+    .text-readable {
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+      color: white;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+    }
+    .section-a {
+      width: 50%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 0;
+      border: 2px solid black;
+      box-sizing: border-box;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .video-container {
+      width: 100%;
+      height: 70%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+    }
+    video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .divider-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 70%;
+      height: 2px;
+      background: black;
+      z-index: 1;
+    }
+    .section-b-c {
+      width: 50%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border-left: 2px solid black;
+    }
+    .section-b {
+      height: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid black;
+      box-sizing: border-box;
+      border-bottom: none;
+    }
+    .section-c {
+      height: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid black;
+      box-sizing: border-box;
+      border-top: none;
+    }
+    .results-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 70%;
+      padding: 15px;
+      overflow-y: auto;
+      background: transparent;
+    }
+    .nav-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 15px;
+    }
+    .nav-link {
+      color: white;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    .nav-link:hover {
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.5),
+                   0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .next-button {
+      background-color: transparent;
+      color: #ffffff;
+      padding: 8px 16px;
+      border: 2px solid #ffffff;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .next-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+    .next-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <div class="container">
+    <!-- Section A (Left Window) -->
+    <div class="section-a">
+      <!-- Navigation Links -->
+      <div class="nav-container">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/" class="nav-link">Analyze New Video</a>
+      </div>
+      <!-- Video Player -->
+      <div class="video-container">
+        <video id="analysisVideo" controls>
+          <source id="videoSource" src="" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <!-- Horizontal divider line -->
+      <div class="divider-line"></div>
+      <!-- Results container in bottom left section -->
+      <div id="results" class="results-container">
+        <h3 class="text-xl font-semibold mb-2 text-readable">Current Event</h3>
+        <p id="currentEvent" class="mb-4 text-readable"></p>
+        <button id="nextButton" class="next-button">Next</button>
+      </div>
+    </div>
+    <!-- Sections B and C (Right Windows) -->
+    <div class="section-b-c">
+      <div class="section-b">
+        <!-- Empty right top section -->
+      </div>
+      <div class="section-c">
+        <!-- Empty right bottom section -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = (seconds % 60).toFixed(2).padStart(5, '0');
+      return `${minutes.toString().padStart(2, '0')}:${secs}`;
+    }
+
+    window.onload = () => {
+      const results = JSON.parse(sessionStorage.getItem('analysisResults'));
+      const videoFilename = sessionStorage.getItem('videoFilename');
+      const videoElement = document.getElementById('analysisVideo');
+      const videoSource = document.getElementById('videoSource');
+      const currentEventElement = document.getElementById('currentEvent');
+      const nextButton = document.getElementById('nextButton');
+
+      if (!results) {
+        currentEventElement.textContent = 'No analysis results available.';
+        videoElement.style.display = 'none';
+        nextButton.disabled = true;
+        return;
+      }
+
+      // Set video source if filename is available
+      if (videoFilename) {
+        videoSource.src = `/Uploads/${encodeURIComponent(videoFilename)}`;
+        videoElement.load();
+      } else {
+        videoElement.style.display = 'none';
+        currentEventElement.textContent = 'Video not available.';
+        nextButton.disabled = true;
+        return;
+      }
+
+      // Combine hand movements and intents into a single timeline
+      const timeline = [];
+
+      // Add hand movements
+      const handMovements = results.handMovements || [];
+      handMovements.forEach(range => {
+        timeline.push({
+          type: 'hand',
+          start: range.start,
+          end: range.end,
+          label: `Hand Moved (${formatTime(range.start)} - ${formatTime(range.end)})`
+        });
+      });
+
+      // Add intents
+      const intents = results.intents || [];
+      intents.forEach(({ intent, sentence, start, end }) => {
+        timeline.push({
+          type: 'intent',
+          start: start,
+          end: end,
+          label: `${intent} (${formatTime(start)} - ${formatTime(end)}): ${sentence}`
+        });
+      });
+
+      // Sort timeline by start time
+      timeline.sort((a, b) => a.start - b.start);
+
+      if (timeline.length === 0) {
+        currentEventElement.textContent = 'No events detected.';
+        videoElement.style.display = 'none';
+        nextButton.disabled = true;
+        return;
+      }
+
+      let currentIndex = -1; // Start before the first segment
+
+      function playSegment(index) {
+        if (index >= timeline.length) {
+          currentEventElement.textContent = 'No more events to display.';
+          nextButton.disabled = true;
+          videoElement.pause();
+          return;
+        }
+
+        const event = timeline[index];
+        videoElement.currentTime = event.start;
+        currentEventElement.textContent = event.label;
+        videoElement.play();
+
+        // Stop playback at the end of the segment
+        const checkTime = () => {
+          if (videoElement.currentTime >= event.end) {
+            videoElement.pause();
+            videoElement.removeEventListener('timeupdate', checkTime);
+          }
+        };
+
+        videoElement.addEventListener('timeupdate', checkTime);
+      }
+
+      // Handle "Next" button click
+      nextButton.addEventListener('click', () => {
+        currentIndex++;
+        playSegment(currentIndex);
+      });
+
+      // Initialize with a prompt to click "Next"
+      currentEventElement.textContent = 'Click "Next" to start viewing events.';
+
+      // Handle manual play/pause to stay within current segment
+      videoElement.addEventListener('play', () => {
+        if (currentIndex >= 0 && currentIndex < timeline.length) {
+          const event = timeline[currentIndex];
+          if (videoElement.currentTime > event.end) {
+            videoElement.currentTime = event.start;
+          }
+        }
+      });
+
+      // Clean up session storage
+      sessionStorage.removeItem('analysisResults');
+      sessionStorage.removeItem('videoFilename');
+    };
+  </script>
+</body>
+</html>
